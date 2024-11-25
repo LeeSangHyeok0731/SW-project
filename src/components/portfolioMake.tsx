@@ -62,7 +62,6 @@ const Portfolio: React.FC = () => {
     }
   }, []);
 
-  // 데이터 수정 처리
   const handleEdit = (field: keyof PortfolioData, value: string) => {
     setPortfolioData((prevData) => {
       const updatedData = { ...prevData, [field]: value };
