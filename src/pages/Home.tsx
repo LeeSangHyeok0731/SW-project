@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet";
-import Button from "../components/button";
+import Button from "../components/gptbutton";
 import Header from "../components/header";
+import ProtButton from "../components/protfolioButton";
 
 function Home() {
   return (
@@ -10,6 +11,7 @@ function Home() {
       </Helmet>
       <Header />
       <Button />
+      <ProtButton />
     </>
   );
 }

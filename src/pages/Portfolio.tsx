@@ -1,4 +1,6 @@
 import { Helmet } from "react-helmet";
+import Header from "../components/header";
+import PortfolioMake from "../components/portfolioMake";
 
 function Protfolio() {
   return (
@@ -6,7 +8,8 @@ function Protfolio() {
       <Helmet>
         <title>Find JOB | 포트폴리오</title>
       </Helmet>
-      <h1>포트폴리오</h1>
+      <Header />
+      <PortfolioMake />
     </>
   );
 }
