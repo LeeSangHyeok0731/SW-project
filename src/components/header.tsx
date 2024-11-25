@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import MainLogo from "../assets/mainLogoSvg";
+import { useNavigate } from "react-router-dom";
 
 const HeaderWrapper = styled.div`
   width: 100vw;
@@ -14,10 +15,16 @@ const LogoBox = styled.div`
 `;
 
 function Header() {
+  const navigate = useNavigate();
+
+  const go = () => {
+    navigate("/");
+  };
+
   return (
     <>
       <HeaderWrapper>
-        <LogoBox>
+        <LogoBox onClick={go}>
           <MainLogo />
         </LogoBox>
       </HeaderWrapper>

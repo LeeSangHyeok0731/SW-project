@@ -1,17 +1,17 @@
 import { Helmet } from "react-helmet";
-import Button from "../components/button";
 import Header from "../components/header";
+import ChatGpt from "../components/chatgpt";
 
-function Home() {
+function ChatBot() {
   return (
     <>
       <Helmet>
-        <title>Find JOB | 홈</title>
+        <title>Find JOB | 챗봇</title>
       </Helmet>
       <Header />
-      <Button />
+      <ChatGpt />
     </>
   );
 }
 
-export default Home;
+export default ChatBot;
