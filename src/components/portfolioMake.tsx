@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
@@ -19,37 +19,66 @@ interface PortfolioData {
 
 const Portfolio: React.FC = () => {
   const [portfolioData, setPortfolioData] = useState<PortfolioData>({
-    aboutMe:
-      "Hello! I'm John Doe, a passionate web developer with experience in building modern, responsive, and scalable applications.",
-    skills: ["TypeScript", "React", "Styled-Components", "Node.js", "MongoDB"],
-    projects: [
-      {
-        title: "Portfolio Website",
-        description:
-          "A personal portfolio website built with React, TypeScript, and styled-components.",
-        link: "#",
-      },
-      {
-        title: "E-Commerce App",
-        description:
-          "An e-commerce application built with React, Redux, and Node.js.",
-        link: "#",
-      },
-    ],
-    contact: "Feel free to reach out to me via email: john.doe@example.com",
+    aboutMe: "",
+    skills: [],
+    projects: [],
+    contact: "",
   });
 
+  // 페이지 로드 시 로컬 저장소에서 데이터 불러오기
+  useEffect(() => {
+    const savedData = localStorage.getItem("portfolioData");
+    if (savedData) {
+      setPortfolioData(JSON.parse(savedData));
+    } else {
+      const initialData: PortfolioData = {
+        aboutMe:
+          "Hello! I'm John Doe, a passionate web developer with experience in building modern, responsive, and scalable applications.",
+        skills: [
+          "TypeScript",
+          "React",
+          "Styled-Components",
+          "Node.js",
+          "MongoDB",
+        ],
+        projects: [
+          {
+            title: "Portfolio Website",
+            description:
+              "A personal portfolio website built with React, TypeScript, and styled-components.",
+            link: "#",
+          },
+          {
+            title: "E-Commerce App",
+            description:
+              "An e-commerce application built with React, Redux, and Node.js.",
+            link: "#",
+          },
+        ],
+        contact: "Feel free to reach out to me via email: john.doe@example.com",
+      };
+      setPortfolioData(initialData);
+      localStorage.setItem("portfolioData", JSON.stringify(initialData)); // 초기 데이터 로컬 저장소에 저장
+    }
+  }, []);
+
+  // 데이터 수정 처리
   const handleEdit = (field: keyof PortfolioData, value: string) => {
-    setPortfolioData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
+    setPortfolioData((prevData) => {
+      const updatedData = { ...prevData, [field]: value };
+      localStorage.setItem("portfolioData", JSON.stringify(updatedData)); // 수정된 데이터를 로컬 저장소에 저장
+      return updatedData;
+    });
   };
 
   const handleSkillsEdit = (index: number, value: string) => {
     const updatedSkills = [...portfolioData.skills];
     updatedSkills[index] = value;
-    setPortfolioData({ ...portfolioData, skills: updatedSkills });
+    setPortfolioData((prevData) => {
+      const updatedData = { ...prevData, skills: updatedSkills };
+      localStorage.setItem("portfolioData", JSON.stringify(updatedData)); // 수정된 데이터를 로컬 저장소에 저장
+      return updatedData;
+    });
   };
 
   const handleProjectEdit = (
@@ -59,7 +88,11 @@ const Portfolio: React.FC = () => {
   ) => {
     const updatedProjects = [...portfolioData.projects];
     updatedProjects[index] = { ...updatedProjects[index], [field]: value };
-    setPortfolioData({ ...portfolioData, projects: updatedProjects });
+    setPortfolioData((prevData) => {
+      const updatedData = { ...prevData, projects: updatedProjects };
+      localStorage.setItem("portfolioData", JSON.stringify(updatedData)); // 수정된 데이터를 로컬 저장소에 저장
+      return updatedData;
+    });
   };
 
   // PDF 다운로드 함수
