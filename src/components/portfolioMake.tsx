@@ -24,6 +24,7 @@ const Portfolio: React.FC = () => {
     projects: [],
     contact: "",
   });
+  const [newSkill, setNewSkill] = useState<string>(""); // 새로운 기술을 위한 상태 추가
 
   // 페이지 로드 시 로컬 저장소에서 데이터 불러오기
   useEffect(() => {
@@ -62,6 +63,7 @@ const Portfolio: React.FC = () => {
     }
   }, []);
 
+  // 데이터 수정 처리
   const handleEdit = (field: keyof PortfolioData, value: string) => {
     setPortfolioData((prevData) => {
       const updatedData = { ...prevData, [field]: value };
@@ -92,6 +94,19 @@ const Portfolio: React.FC = () => {
       localStorage.setItem("portfolioData", JSON.stringify(updatedData)); // 수정된 데이터를 로컬 저장소에 저장
       return updatedData;
     });
+  };
+
+  // 기술 추가 함수
+  const handleAddSkill = () => {
+    if (newSkill.trim()) {
+      setPortfolioData((prevData) => {
+        const updatedSkills = [...prevData.skills, newSkill];
+        const updatedData = { ...prevData, skills: updatedSkills };
+        localStorage.setItem("portfolioData", JSON.stringify(updatedData)); // 수정된 데이터를 로컬 저장소에 저장
+        return updatedData;
+      });
+      setNewSkill(""); // 입력 후 입력란 초기화
+    }
   };
 
   // PDF 다운로드 함수
@@ -133,6 +148,14 @@ const Portfolio: React.FC = () => {
               />
             ))}
           </EditableList>
+          <SkillInputContainer>
+            <EditableInput
+              value={newSkill}
+              onChange={(e) => setNewSkill(e.target.value)}
+              placeholder="Add a new skill"
+            />
+            <AddSkillButton onClick={handleAddSkill}>Add Skill</AddSkillButton>
+          </SkillInputContainer>
         </Section>
 
         <Section>
@@ -261,34 +284,53 @@ const EditableItem = styled.input`
   box-sizing: border-box;
 `;
 
+const SkillInputContainer = styled.div`
+  display: flex;
+  margin-top: 10px;
+`;
+
+const AddSkillButton = styled.button`
+  padding: 10px;
+  background-color: #41c777;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 1rem;
+  &:hover {
+    background-color: #36b267;
+  }
+`;
+
 const ProjectContainer = styled.div`
   margin-bottom: 20px;
 `;
 
 const Footer = styled.footer`
   text-align: center;
-  padding: 20px;
-  background-color: #343a40;
-  color: white;
+  margin-top: 40px;
+  padding: 10px;
 `;
 
 const FooterText = styled.p`
-  margin: 0;
   font-size: 1rem;
+  color: #777;
 `;
 
 const DownloadButton = styled.button`
+  padding: 10px;
   background-color: #41c777;
   color: white;
   border: none;
-  padding: 10px 20px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  margin-top: 20px;
   border-radius: 8px;
-
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  display: block;
+  width: 100%;
   &:hover {
-    background-color: #38b768;
+    background-color: #36b267;
   }
 `;
 
