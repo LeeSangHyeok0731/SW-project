@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 // 데이터 타입 정의
-
 interface Project {
   title: string;
   description: string;
@@ -16,176 +17,247 @@ interface PortfolioData {
   contact: string;
 }
 
-// 포트폴리오 데이터 예시
-const portfolioData: PortfolioData = {
-  aboutMe:
-    "Hello! I'm John Doe, a passionate web developer with experience in building modern, responsive, and scalable applications. I specialize in front-end technologies and love learning new skills.",
-  skills: [
-    "TypeScript",
-    "React",
-    "Styled-Components",
-    "Node.js",
-    "Express",
-    "MongoDB",
-  ],
-  projects: [
-    {
-      title: "Portfolio Website",
-      description:
-        "A personal portfolio website built with React, TypeScript, and styled-components to showcase my projects and skills.",
-      link: "#",
-    },
-    {
-      title: "E-Commerce App",
-      description:
-        "An e-commerce application built with React, Redux, and Node.js to provide a seamless shopping experience.",
-      link: "#",
-    },
-  ],
-  contact:
-    "If you'd like to get in touch, feel free to reach out to me via email: john.doe@example.com",
-};
+const Portfolio: React.FC = () => {
+  const [portfolioData, setPortfolioData] = useState<PortfolioData>({
+    aboutMe:
+      "Hello! I'm John Doe, a passionate web developer with experience in building modern, responsive, and scalable applications.",
+    skills: ["TypeScript", "React", "Styled-Components", "Node.js", "MongoDB"],
+    projects: [
+      {
+        title: "Portfolio Website",
+        description:
+          "A personal portfolio website built with React, TypeScript, and styled-components.",
+        link: "#",
+      },
+      {
+        title: "E-Commerce App",
+        description:
+          "An e-commerce application built with React, Redux, and Node.js.",
+        link: "#",
+      },
+    ],
+    contact: "Feel free to reach out to me via email: john.doe@example.com",
+  });
 
-const PortfolioMake: React.FC = () => {
+  const handleEdit = (field: keyof PortfolioData, value: string) => {
+    setPortfolioData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+  const handleSkillsEdit = (index: number, value: string) => {
+    const updatedSkills = [...portfolioData.skills];
+    updatedSkills[index] = value;
+    setPortfolioData({ ...portfolioData, skills: updatedSkills });
+  };
+
+  const handleProjectEdit = (
+    index: number,
+    field: keyof Project,
+    value: string
+  ) => {
+    const updatedProjects = [...portfolioData.projects];
+    updatedProjects[index] = { ...updatedProjects[index], [field]: value };
+    setPortfolioData({ ...portfolioData, projects: updatedProjects });
+  };
+
+  // PDF 다운로드 함수
+  const downloadPDF = () => {
+    const input = document.getElementById("portfolio-content");
+    if (input) {
+      html2canvas(input, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const doc = new jsPDF("p", "mm", "a4"); // A4 사이즈
+        doc.addImage(imgData, "PNG", 10, 10, 190, 277); // A4 크기에 맞춰 이미지 추가
+        doc.save("portfolio.pdf");
+      });
+    }
+  };
+
   return (
-    <Container>
+    <PageContainer>
       <Header>
         <Title>My Portfolio</Title>
-        <Subtitle>Welcome to my personal portfolio website</Subtitle>
       </Header>
 
-      <Section id="about">
-        <SectionTitle>About Me</SectionTitle>
-        <Paragraph>{portfolioData.aboutMe}</Paragraph>
-      </Section>
+      <PortfolioContent id="portfolio-content">
+        <Section>
+          <SectionTitle>About Me</SectionTitle>
+          <EditableTextArea
+            value={portfolioData.aboutMe}
+            onChange={(e) => handleEdit("aboutMe", e.target.value)}
+          />
+        </Section>
 
-      <Section id="skills">
-        <SectionTitle>Skills</SectionTitle>
-        <SkillsList>
-          {portfolioData.skills.map((skill, index) => (
-            <Skill key={index}>{skill}</Skill>
+        <Section>
+          <SectionTitle>Skills</SectionTitle>
+          <EditableList>
+            {portfolioData.skills.map((skill, index) => (
+              <EditableItem
+                key={index}
+                value={skill}
+                onChange={(e) => handleSkillsEdit(index, e.target.value)}
+              />
+            ))}
+          </EditableList>
+        </Section>
+
+        <Section>
+          <SectionTitle>Projects</SectionTitle>
+          {portfolioData.projects.map((project, index) => (
+            <ProjectContainer key={index}>
+              <EditableInput
+                value={project.title}
+                onChange={(e) =>
+                  handleProjectEdit(index, "title", e.target.value)
+                }
+              />
+              <EditableTextArea
+                value={project.description}
+                onChange={(e) =>
+                  handleProjectEdit(index, "description", e.target.value)
+                }
+              />
+              <EditableInput
+                value={project.link}
+                onChange={(e) =>
+                  handleProjectEdit(index, "link", e.target.value)
+                }
+              />
+            </ProjectContainer>
           ))}
-        </SkillsList>
-      </Section>
+        </Section>
 
-      <Section id="projects">
-        <SectionTitle>Projects</SectionTitle>
-        {portfolioData.projects.map((project, index) => (
-          <Project key={index}>
-            <ProjectTitle>{project.title}</ProjectTitle>
-            <ProjectDescription>{project.description}</ProjectDescription>
-            <ProjectLink href={project.link} target="_blank">
-              View Project
-            </ProjectLink>
-          </Project>
-        ))}
-      </Section>
+        <Section>
+          <SectionTitle>Contact</SectionTitle>
+          <EditableTextArea
+            value={portfolioData.contact}
+            onChange={(e) => handleEdit("contact", e.target.value)}
+          />
+        </Section>
 
-      <Section id="contact">
-        <SectionTitle>Contact</SectionTitle>
-        <Paragraph>{portfolioData.contact}</Paragraph>
-      </Section>
+        <Footer>
+          <FooterText>© 2024 John Doe. All rights reserved.</FooterText>
+        </Footer>
+      </PortfolioContent>
 
-      <Footer>
-        <FooterText>© 2024 John Doe. All rights reserved.</FooterText>
-      </Footer>
-    </Container>
+      <DownloadButton onClick={downloadPDF}>Download as PDF</DownloadButton>
+    </PageContainer>
   );
 };
 
-// Styled-components
-
-const Container = styled.div`
+// 스타일링
+const PageContainer = styled.div`
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 1200px;
+  width: 100%;
   background-color: #f4f4f9;
   color: #333;
+  page-break-before: always;
+  @media print {
+    width: 100%;
+  }
 `;
 
 const Header = styled.header`
-  background-color: #007bff;
+  background-color: #41c777;
   color: white;
-  padding: 40px 20px;
   text-align: center;
+  padding: 20px;
+  margin-bottom: 20px;
 `;
 
 const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: 3rem;
   margin: 0;
 `;
 
-const Subtitle = styled.p`
-  font-size: 1.2rem;
-  margin-top: 10px;
+const PortfolioContent = styled.div`
+  page-break-before: always;
 `;
 
 const Section = styled.section`
-  padding: 40px 20px;
-  margin: 20px 0;
-  background-color: #fff;
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const SectionTitle = styled.h2`
   font-size: 2rem;
-  margin-bottom: 20px;
-  color: #007bff;
+  color: #41c777;
+  margin-bottom: 15px;
 `;
 
-const Paragraph = styled.p`
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #555;
-`;
-
-const SkillsList = styled.ul`
-  list-style-type: none;
-  padding: 0;
-`;
-
-const Skill = styled.li`
-  background-color: #e9ecef;
-  margin: 5px 0;
+const EditableTextArea = styled.textarea`
+  width: 100%;
   padding: 10px;
-  border-radius: 5px;
   font-size: 1.1rem;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  min-height: 100px;
+  resize: vertical;
 `;
 
-const Project = styled.div`
+const EditableInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  font-size: 1.1rem;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+`;
+
+const EditableList = styled.div`
+  margin-top: 10px;
+`;
+
+const EditableItem = styled.input`
+  width: 100%;
+  padding: 10px;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+`;
+
+const ProjectContainer = styled.div`
   margin-bottom: 20px;
-`;
-
-const ProjectTitle = styled.h3`
-  font-size: 1.5rem;
-  margin: 10px 0;
-`;
-
-const ProjectDescription = styled.p`
-  font-size: 1.1rem;
-  color: #555;
-`;
-
-const ProjectLink = styled.a`
-  font-size: 1.1rem;
-  color: #007bff;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
 `;
 
 const Footer = styled.footer`
-  background-color: #343a40;
-  color: white;
   text-align: center;
   padding: 20px;
+  background-color: #343a40;
+  color: white;
 `;
 
 const FooterText = styled.p`
   margin: 0;
+  font-size: 1rem;
 `;
 
-export default PortfolioMake;
+const DownloadButton = styled.button`
+  background-color: #41c777;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: #38b768;
+  }
+`;
+
+export default Portfolio;
