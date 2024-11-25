@@ -24,7 +24,7 @@ const Portfolio: React.FC = () => {
     projects: [],
     contact: "",
   });
-  const [newSkill, setNewSkill] = useState<string>(""); // 새로운 기술을 위한 상태 추가
+  const [newSkill, setNewSkill] = useState<string>("");
 
   // 페이지 로드 시 로컬 저장소에서 데이터 불러오기
   useEffect(() => {
@@ -56,7 +56,7 @@ const Portfolio: React.FC = () => {
         contact: "Feel free to reach out to me via email: john.doe@example.com",
       };
       setPortfolioData(initialData);
-      localStorage.setItem("portfolioData", JSON.stringify(initialData)); // 초기 데이터 로컬 저장소에 저장
+      localStorage.setItem("portfolioData", JSON.stringify(initialData));
     }
   }, []);
 
@@ -64,7 +64,7 @@ const Portfolio: React.FC = () => {
   const handleEdit = (field: keyof PortfolioData, value: string) => {
     setPortfolioData((prevData) => {
       const updatedData = { ...prevData, [field]: value };
-      localStorage.setItem("portfolioData", JSON.stringify(updatedData)); // 수정된 데이터를 로컬 저장소에 저장
+      localStorage.setItem("portfolioData", JSON.stringify(updatedData));
       return updatedData;
     });
   };
@@ -74,7 +74,7 @@ const Portfolio: React.FC = () => {
     updatedSkills[index] = value;
     setPortfolioData((prevData) => {
       const updatedData = { ...prevData, skills: updatedSkills };
-      localStorage.setItem("portfolioData", JSON.stringify(updatedData)); // 수정된 데이터를 로컬 저장소에 저장
+      localStorage.setItem("portfolioData", JSON.stringify(updatedData));
       return updatedData;
     });
   };
@@ -88,7 +88,7 @@ const Portfolio: React.FC = () => {
     updatedProjects[index] = { ...updatedProjects[index], [field]: value };
     setPortfolioData((prevData) => {
       const updatedData = { ...prevData, projects: updatedProjects };
-      localStorage.setItem("portfolioData", JSON.stringify(updatedData)); // 수정된 데이터를 로컬 저장소에 저장
+      localStorage.setItem("portfolioData", JSON.stringify(updatedData));
       return updatedData;
     });
   };
@@ -99,7 +99,7 @@ const Portfolio: React.FC = () => {
       setPortfolioData((prevData) => {
         const updatedSkills = [...prevData.skills, newSkill];
         const updatedData = { ...prevData, skills: updatedSkills };
-        localStorage.setItem("portfolioData", JSON.stringify(updatedData)); // 수정된 데이터를 로컬 저장소에 저장
+        localStorage.setItem("portfolioData", JSON.stringify(updatedData));
         return updatedData;
       });
       setNewSkill(""); // 입력 후 입력란 초기화
@@ -112,7 +112,7 @@ const Portfolio: React.FC = () => {
     if (input) {
       html2canvas(input, { scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
-        const doc = new jsPDF("p", "mm", "a4"); // A4 사이즈
+        const doc = new jsPDF("p", "mm", "a4");
         doc.addImage(imgData, "PNG", 10, 10, 190, 277); // A4 크기에 맞춰 이미지 추가
         doc.save("portfolio.pdf");
       });
@@ -292,31 +292,14 @@ const AddSkillButton = styled.button`
   color: white;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
   margin-left: 10px;
-  font-size: 1rem;
-  &:hover {
-    background-color: #36b267;
-  }
-`;
-
-const ProjectContainer = styled.div`
-  margin-bottom: 20px;
-`;
-
-const Footer = styled.footer`
-  text-align: center;
-  margin-top: 40px;
-  padding: 10px;
-`;
-
-const FooterText = styled.p`
-  font-size: 1rem;
-  color: #777;
+  cursor: pointer;
 `;
 
 const DownloadButton = styled.button`
-  padding: 10px;
+  display: block;
+  width: 100%;
+  padding: 15px;
   background-color: #41c777;
   color: white;
   border: none;
@@ -324,11 +307,20 @@ const DownloadButton = styled.button`
   cursor: pointer;
   font-size: 1.2rem;
   margin-top: 20px;
-  display: block;
-  width: 100%;
-  &:hover {
-    background-color: #36b267;
-  }
+`;
+
+const ProjectContainer = styled.div`
+  margin-bottom: 15px;
+`;
+
+const Footer = styled.footer`
+  text-align: center;
+  margin-top: 30px;
+`;
+
+const FooterText = styled.p`
+  font-size: 0.9rem;
+  color: #888;
 `;
 
 export default Portfolio;
