@@ -33,26 +33,23 @@ const Portfolio: React.FC = () => {
       setPortfolioData(JSON.parse(savedData));
     } else {
       const initialData: PortfolioData = {
-        aboutMe:
-          "Hello! I'm John Doe, a passionate web developer with experience in building modern, responsive, and scalable applications.",
+        aboutMe: "자신의 대한 소개를 적어주세요",
         skills: [
-          "TypeScript",
-          "React",
-          "Styled-Components",
-          "Node.js",
-          "MongoDB",
+          "기술이나 자격증 적어주세요",
+          "기술이나 자격증 적어주세요",
+          "기술이나 자격증 적어주세요",
+          "기술이나 자격증 적어주세요",
+          "기술이나 자격증 적어주세요",
         ],
         projects: [
           {
-            title: "Portfolio Website",
-            description:
-              "A personal portfolio website built with React, TypeScript, and styled-components.",
+            title: "프로젝트 경험",
+            description: "",
             link: "#",
           },
           {
-            title: "E-Commerce App",
-            description:
-              "An e-commerce application built with React, Redux, and Node.js.",
+            title: "프로젝트 경험",
+            description: "",
             link: "#",
           },
         ],
